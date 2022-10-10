@@ -120,7 +120,10 @@ typedef struct malloc_2d_arena_struct_t {
     };
     // This is used for huge arena
     struct {
+      // Page count of the body. Used for computing data size
       int page_count;
+      // Actual pages mmap'ed. Used for munmap
+      int alloc_page_count;
     };
   };
   int flags;

@@ -94,7 +94,7 @@ void malloc_2d_arena_free(malloc_2d_arena_t *arena) {
       malloc_2d_free_os_page(arena->base, MALLOC_2D_ARENA_SIZE);
     } break;
     case MALLOC_2D_ARENA_FLAGS_HUGE: {
-      malloc_2d_free_os_page(arena->base, arena->page_count);
+      malloc_2d_free_os_page(arena->base, arena->alloc_page_count);
     } break;
     default: {
       error_exit("Unknown arena type: %d\n", type);
@@ -341,7 +341,8 @@ malloc_2d_arena_t *malloc_2d_arena_huge_init(size_t sz) {
   malloc_2d_arena_t *arena = (malloc_2d_arena_t *)ret;
   arena->base = old_ret;
   arena->sc = NULL;
-  arena->page_count = alloc_page_count;
+  arena->alloc_page_count = alloc_page_count;
+  arena->page_count = page_count;
   arena->free_list = arena->prev = arena->next = NULL;
   malloc_2d_arena_set_huge(arena);
   return arena;
@@ -360,8 +361,8 @@ void malloc_2d_arena_huge_dealloc(malloc_2d_arena_t *arena) {
 }
 
 void malloc_2d_arena_huge_print(malloc_2d_arena_t *arena) {
-  printf("Arena (huge) 0x%lX base 0x%lX pages %d\n", 
-    (uint64_t)arena, (uint64_t)arena->base, arena->page_count);
+  printf("Arena (huge) 0x%lX base 0x%lX pages %d alloc pages %d\n", 
+    (uint64_t)arena, (uint64_t)arena->base, arena->page_count, arena->alloc_page_count);
   return;
 }
 
@@ -674,8 +675,8 @@ void malloc_2d_sc_huge_print(malloc_2d_sc_t *sc) {
     sc->count);
   malloc_2d_arena_t *arena = sc->free_list;
   while(arena != NULL) {
-    printf("  Huge arena 0x%lX base 0x%lX pages %d\n", 
-      (uint64_t)arena, (uint64_t)arena->base, arena->page_count);
+    printf("  Huge arena 0x%lX base 0x%lX pages %d alloc pages %d\n", 
+      (uint64_t)arena, (uint64_t)arena->base, arena->page_count, arena->alloc_page_count);
     assert(arena->next == NULL || arena->next->prev == arena);
     assert(arena->prev == NULL || arena->prev->next == arena);
     arena = arena->next;
