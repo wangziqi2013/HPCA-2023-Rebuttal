@@ -38,8 +38,8 @@ of an object.
 Second, programmers should be able to use `LD_PRELOAD` to override the existing `malloc` library and replace 
 it with ours to support inter-block compression. Currently, our implementation can be compiled into a `.so` file
 and can be `LD_PRELOAD`'ed into many applications without breaking them 
-(e.g., try `LD_PRELOAD=./malloc_2d.so ls -al`; Due to time constraints we are still debugging it, so there can be 
-occasional crashes). 
+(e.g., try `LD_PRELOAD=./malloc_2d.so ls -al`). We tested our implementation on many real-world, complicated scenario
+such as on g++ compiling the library itself. All tests are passed without crashes.
 
 Build Instructions
 ------------------
